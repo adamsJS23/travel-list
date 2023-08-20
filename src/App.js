@@ -7,11 +7,6 @@ const initialItems = [
   { id: 4, description: "shoes", quantity: 12, packed: true },
 ];
 
-const optionArr = [];
-for (let i = 1; i <= 20; i++) {
-  optionArr.push(i);
-}
-
 export default function App() {
   return (
     <div className="App">
@@ -23,6 +18,11 @@ export default function App() {
   );
 }
 
+// Array.from({ length: 20 }).forEach((_, i, arr) => {
+//   arr.push(i + 1);
+//   console.log(Array.isArray(arr));
+// });
+
 function Logo() {
   return <h1>🌴 Far Away 🧳</h1>;
 }
@@ -32,7 +32,7 @@ function Form() {
     <form className="add-form">
       <h3>What do you need for your trip</h3>
       <select>
-        {optionArr.map((option) => (
+        {Array.from({ length: 20 }, (_, i) => i + 1).map((option) => (
           <Option number={option} key={option} />
         ))}
       </select>
