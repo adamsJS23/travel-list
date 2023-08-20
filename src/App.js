@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "./index.css";
 
 const initialItems = [
@@ -28,22 +29,49 @@ function Logo() {
 }
 
 function Form() {
+  const [description, setDescription] = useState("");
+  const [quantity, setQuantity] = useState(1);
+
+  function hanbleSubmit(evt) {
+    evt.preventDefault();
+
+    if (!description) return;
+
+    const newItem = { id: Date.now(), description, quantity, packed: false };
+    console.log(newItem);
+
+    setDescription("");
+    setQuantity(1);
+  }
+
   return (
-    <form className="add-form">
+    <form className="add-form" onSubmit={hanbleSubmit}>
       <h3>What do you need for your trip</h3>
-      <select>
-        {Array.from({ length: 20 }, (_, i) => i + 1).map((option) => (
-          <Option number={option} key={option} />
+      <select
+        value={quantity}
+        onChange={(evt) => setQuantity(Number(evt.target.value))}
+      >
+        {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
+          <Option num={num} key={num} />
         ))}
       </select>
-      <input type="text" placeholder="Item..." />
+      <input
+        type="text"
+        placeholder="Item..."
+        value={description}
+        onChange={(evt) => {
+          console.log(evt.target);
+          console.log(evt.target.value);
+          setDescription(evt.target.value);
+        }}
+      />
       <button>Add</button>
     </form>
   );
 }
 
 function Option(props) {
-  return <option value={props.number}>{props.number}</option>;
+  return <option value={props.num}>{props.num}</option>;
 }
 
 function PackingList() {
