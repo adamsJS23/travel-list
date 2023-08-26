@@ -9,11 +9,17 @@ const initialItems = [
 ];
 
 export default function App() {
+  const [items, setItems] = useState([]);
+
+  function handleAddItems(item) {
+    setItems((items) => [...items, item]);
+  }
+
   return (
     <div className="App">
       <Logo />
-      <Form />
-      <PackingList />
+      <Form onAddItems={handleAddItems} />
+      <PackingList items={items} />
       <Stats />
     </div>
   );
@@ -28,7 +34,7 @@ function Logo() {
   return <h1>🌴 Far Away 🧳</h1>;
 }
 
-function Form() {
+function Form({ onAddItems }) {
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState(1);
 
@@ -42,6 +48,8 @@ function Form() {
 
     setDescription("");
     setQuantity(1);
+
+    onAddItems(newItem);
   }
 
   return (
@@ -49,7 +57,7 @@ function Form() {
       <h3>What do you need for your trip</h3>
       <select
         value={quantity}
-        onChange={(evt) => setQuantity(Number(evt.target.value))}
+        onChange={(evt) => setQuantity(+evt.target.value)}
       >
         {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
           <Option num={num} key={num} />
@@ -59,11 +67,7 @@ function Form() {
         type="text"
         placeholder="Item..."
         value={description}
-        onChange={(evt) => {
-          console.log(evt.target);
-          console.log(evt.target.value);
-          setDescription(evt.target.value);
-        }}
+        onChange={(evt) => setDescription(evt.target.value)}
       />
       <button>Add</button>
     </form>
@@ -74,11 +78,11 @@ function Option(props) {
   return <option value={props.num}>{props.num}</option>;
 }
 
-function PackingList() {
+function PackingList({ items }) {
   return (
     <div className="list">
       <ul>
-        {initialItems.map((item) => (
+        {items.map((item) => (
           <Item item={item} key={item.id} />
         ))}
       </ul>
