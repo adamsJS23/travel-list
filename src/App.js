@@ -15,12 +15,16 @@ export default function App() {
     setItems((items) => [...items, item]);
   }
 
+  function handleDeleteItems(id) {
+    setItems((items) => items.filter((item) => item.id !== id));
+  }
+
   return (
     <div className="App">
       <Logo />
       <Form onAddItems={handleAddItems} />
-      <PackingList items={items} />
-      <Stats />
+      <PackingList items={items} onDeleteItems={handleDeleteItems} />
+      <Stats items={items} />
     </div>
   );
 }
@@ -78,33 +82,36 @@ function Option(props) {
   return <option value={props.num}>{props.num}</option>;
 }
 
-function PackingList({ items }) {
+function PackingList({ items, onDeleteItems }) {
   return (
     <div className="list">
       <ul>
         {items.map((item) => (
-          <Item item={item} key={item.id} />
+          <Item item={item} key={item.id} onDeleteItems={onDeleteItems} />
         ))}
       </ul>
     </div>
   );
 }
 
-function Item({ item }) {
+function Item({ item, onDeleteItems }) {
   return (
     <li>
       <span style={item.packed ? { textDecoration: "line-through" } : {}}>
         {item.quantity} {item.description}
       </span>
-      <button>❌</button>
+      <button onClick={() => onDeleteItems(item.id)}>❌</button>
     </li>
   );
 }
 
-function Stats() {
+function Stats({ items }) {
   return (
     <footer className="stats">
-      <em>🧳You have X items on your list, and you already packed x (X%)</em>
+      <em>
+        🧳You have {items.length} items on your list, and you already packed x
+        (X%)
+      </em>
     </footer>
   );
 }
