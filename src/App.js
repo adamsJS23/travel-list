@@ -88,10 +88,28 @@ function Option(props) {
 }
 
 function PackingList({ items, onDeleteItems, onToggleItem }) {
+  const [sortBy, setSortBy] = useState("input");
+  let itemsSorted;
+  if (sortBy === "input") {
+    itemsSorted = items;
+  }
+
+  if (sortBy === "description") {
+    itemsSorted = items
+      .slice()
+      .sort((a, b) => a.description.localeCompare(b.description));
+  }
+
+  if (sortBy === "packed") {
+    itemsSorted = items
+      .slice()
+      .sort((a, b) => Number(a.packed) - Number(b.packed));
+  }
+
   return (
     <div className="list">
       <ul>
-        {items.map((item) => (
+        {itemsSorted.map((item) => (
           <Item
             item={item}
             key={item.id}
@@ -100,6 +118,13 @@ function PackingList({ items, onDeleteItems, onToggleItem }) {
           />
         ))}
       </ul>
+      <div className="actions">
+        <select value={sortBy} onChange={(evt) => setSortBy(evt.target.value)}>
+          <option value="input">Sort by input</option>
+          <option value="description">Sort by description</option>
+          <option value="packed">Sort by packed</option>
+        </select>
+      </div>
     </div>
   );
 }
@@ -138,7 +163,7 @@ function Stats({ items }) {
         <em>You have got everything, Ready to go🏄‍♂️</em>
       ) : (
         <em>
-          🧳You have {numItems} items on your list, and you already packed +{""}
+          🧳You have {numItems} items on your list, and you already packed {""}
           {packedItems} ({percentage}
           %)
         </em>
