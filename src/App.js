@@ -1,13 +1,6 @@
 import { useState } from "react";
 import "./index.css";
 
-const initialItems = [
-  { id: 1, description: "Passports", quantity: 2, packed: false },
-  { id: 2, description: "Socks", quantity: 12, packed: true },
-  { id: 3, description: "shirt", quantity: 12, packed: false },
-  { id: 4, description: "shoes", quantity: 12, packed: true },
-];
-
 export default function App() {
   const [items, setItems] = useState([]);
 
@@ -19,11 +12,23 @@ export default function App() {
     setItems((items) => items.filter((item) => item.id !== id));
   }
 
+  function handleToggleItem(id) {
+    setItems((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, packed: !item.packed } : item
+      )
+    );
+  }
+
   return (
     <div className="App">
       <Logo />
       <Form onAddItems={handleAddItems} />
-      <PackingList items={items} onDeleteItems={handleDeleteItems} />
+      <PackingList
+        items={items}
+        onDeleteItems={handleDeleteItems}
+        onToggleItem={handleToggleItem}
+      />
       <Stats items={items} />
     </div>
   );
@@ -82,21 +87,31 @@ function Option(props) {
   return <option value={props.num}>{props.num}</option>;
 }
 
-function PackingList({ items, onDeleteItems }) {
+function PackingList({ items, onDeleteItems, onToggleItem }) {
   return (
     <div className="list">
       <ul>
         {items.map((item) => (
-          <Item item={item} key={item.id} onDeleteItems={onDeleteItems} />
+          <Item
+            item={item}
+            key={item.id}
+            onDeleteItems={onDeleteItems}
+            onToggleItem={onToggleItem}
+          />
         ))}
       </ul>
     </div>
   );
 }
 
-function Item({ item, onDeleteItems }) {
+function Item({ item, onDeleteItems, onToggleItem }) {
   return (
     <li>
+      <input
+        type="checkbox"
+        value={item.packed}
+        onChange={() => onToggleItem(item.id)}
+      />
       <span style={item.packed ? { textDecoration: "line-through" } : {}}>
         {item.quantity} {item.description}
       </span>
@@ -109,8 +124,16 @@ function Stats({ items }) {
   return (
     <footer className="stats">
       <em>
-        🧳You have {items.length} items on your list, and you already packed x
-        (X%)
+        🧳You have {items.length} items on your list, and you already packed
+        {items.filter((item) => item.packed === true).length} (
+        {items.length !== 0
+          ? Math.trunc(
+              (items.filter((item) => item.packed === true).length /
+                items.length) *
+                100
+            )
+          : 0}
+        %)
       </em>
     </footer>
   );
