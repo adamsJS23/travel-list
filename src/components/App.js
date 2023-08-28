@@ -7,15 +7,17 @@ import Stats from "./Stats.js";
 
 export default function App() {
   const [items, setItems] = useState([]);
-
+  // Add new item
   function handleAddItems(item) {
     setItems((items) => [...items, item]);
   }
 
+  // Delete Item
   function handleDeleteItems(id) {
     setItems((items) => items.filter((item) => item.id !== id));
   }
 
+  // Upadte an item
   function handleToggleItem(id) {
     setItems((items) =>
       items.map((item) =>
